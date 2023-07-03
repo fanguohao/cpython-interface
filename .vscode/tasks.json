@@ -1,0 +1,14 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "test",
+      "command": "cd build && cmake .. -DCMAKE_BUILD_TYPE=debug && make",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ],
+  "version": "2.0.0"
+}
