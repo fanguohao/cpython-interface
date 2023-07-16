@@ -10,19 +10,24 @@ CPythonInterface::~CPythonInterface()
   Py_FinalizeEx();
 }
 
-PyObject *CPythonInterface::loadPyFunc(char *pythonFileName, char *pythonFuncName)
+PyObject *CPythonInterface::loadPyFunc(char *pythonFileName, char *pythonFuncName, std::string work_space = ".")
 {
+
   setenv("PYTHONPATH", ".", 1);
 
   // Initialize the Python Interpreter
-  Py_Initialize();
+  if (!Py_IsInitialized())
+    Py_Initialize();
 
-  // import_array(); // Initialize the NumPy C API
+  std::string command = "import sys; sys.path.append('" + work_space + "')";
+  PyRun_SimpleString(command.c_str());
+
   // Build the name object
   pName = PyUnicode_FromString((char *)pythonFileName);
 
   // Load the module object
   pModule = PyImport_Import(pName);
+  PyErr_Print();
 
   // pDict is a borrowed reference
   pDict = PyModule_GetDict(pModule);

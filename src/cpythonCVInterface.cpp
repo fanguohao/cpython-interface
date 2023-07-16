@@ -1,9 +1,12 @@
 #include "cpythonCVInterface.h"
 
-PyObject *CPythonCVInterface::assemblePArgs()
+PyObject *CPythonCVInterface::assemblePArgs(cv::Mat image1, cv::Mat image2)
 {
-  Py_Initialize();
+  // Py_Initialize();
   // Initialize the NumPy C API
+  this->image1 = image1;
+  this->image2 = image2;
+
   import_array();
 
   // Convert the images to numpy arrays
@@ -21,11 +24,12 @@ PyObject *CPythonCVInterface::assemblePArgs()
 std::vector<cv::Mat> CPythonCVInterface::convertPyObject2Mat(PyAPI_FUNC(PyObject *) pResult)
 {
   std::vector<cv::Mat> res;
-  if (pResult != NULL && PyTuple_Check(pResult) && PyTuple_Size(pResult) == 2)
+  if (pResult != NULL && PyTuple_Check(pResult) && PyTuple_Size(pResult) == 3)
   {
     // Extract the images from the result
     PyObject *pResultImg1 = PyTuple_GetItem(pResult, 0);
     PyObject *pResultImg2 = PyTuple_GetItem(pResult, 1);
+    PyObject *pResultImg3 = PyTuple_GetItem(pResult, 2);
 
     // Convert the images to OpenCV Mats
     cv::Mat resultImage1(
@@ -34,10 +38,14 @@ std::vector<cv::Mat> CPythonCVInterface::convertPyObject2Mat(PyAPI_FUNC(PyObject
     cv::Mat resultImage2(
         image2.rows, image1.cols, CV_8UC1,
         PyArray_DATA(reinterpret_cast<PyArrayObject *>(pResultImg2)));
+    cv::Mat resultImage3(
+        image2.rows, image1.cols, CV_8UC1,
+        PyArray_DATA(reinterpret_cast<PyArrayObject *>(pResultImg3)));
 
     // Display or process the resulting images as desired
     res.push_back(resultImage1);
     res.push_back(resultImage2);
+    res.push_back(resultImage3);
   }
   return res;
 }

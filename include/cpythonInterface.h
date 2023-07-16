@@ -15,7 +15,7 @@ public:
   CPythonInterface(){};
   ~CPythonInterface();
 
-  PyObject *loadPyFunc(char *pythonFileName, char *pythonFuncName);
+  PyObject *loadPyFunc(char *pythonFileName, char *pythonFuncName, std::string work_space);
   PyAPI_FUNC(PyObject *) callPyFunc(PyObject *pFunc, PyAPI_FUNC(PyObject *) pArgs);
 };
 
